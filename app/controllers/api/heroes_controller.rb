@@ -1,9 +1,9 @@
-class HeroesController < ApplicationController
+class Api::HeroesController < ApplicationController
   before_action :set_hero, only: [:show, :update, :destroy]
 
   # GET /heroes
   def index
-    @heroes = Hero.all
+    @heroes = Hero.all.sorted_by_name
 
     render json: @heroes
   end
@@ -39,7 +39,6 @@ class HeroesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_hero
       @hero = Hero.find(params[:id])
     end
