@@ -1,14 +1,12 @@
-class Hero < ApplicationRecord
-    validates :name, :token, presence: true
+# frozen_string_literal: true
 
-    scope :by_token, -> (token) { where(token: token) }
-    scope :sorted_by_name, -> {order(:name)}
-    scope :search, -> (term) { 
-        if term.present?
-            puts "Term: #{term}. Está presente."
-            where('LOWER(name) LIKE ?', "%#{term.downcase}%")
-        else
-            puts "Term não está presente"
-        end
-    }
+class Hero < ApplicationRecord
+  validates :name, presence: true, uniqueness: { scope: :token, case_sensitive: false }
+  validates :token, presence: true, length: { minimum: 10, maximum: 100 }
+
+  scope :by_token, ->(token) { where(token: token) }
+  scope :sorted_by_name, -> { order(:name) }
+  scope :search, lambda { |name|
+    where('LOWER(name) LIKE ?', "%#{name.downcase}%") if name.present?
+  }
 end
